@@ -1,0 +1,163 @@
+---
+title: "Tarea"
+author: "Johan Córdoba Peraza"
+date: "5/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Carga de paquetes
+
+```{r message= FALSE}
+# Carga de paquetes
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+```
+## Carga de datos y fuentes de datos
+
+```{r}
+# Datos de caudales de ríos
+rios <-
+  read.csv(file = 'https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/hidrologia/fdc/fdc.csv')
+
+# Datos de Covid-19 en Costa Rica
+covid <- 
+  read.csv(
+    file='https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/minsalud/covid/ultimafecha_CSV_GENERAL.csv', 
+    sep = ","
+  )
+
+
+```
+## Preparación de la información primer gráfico
+
+```{r}
+caudales_x_mes <-
+  rios %>%
+  rename(fecha = Tiempo,
+         Río_Banano = Banano.mm..90km2.,
+         Río_Pandora = Pandora.mm..637km2.) %>%
+  pivot_longer(cols = c(`Río_Banano`, `Río_Pandora`), names_to = "rio", values_to   = "caudal") %>%
+  mutate(fecha = as.Date(fecha, format = "%m/%d/%Y")) %>%
+  group_by(rio, mes = format(fecha,"%m")) %>%
+  summarise(caudal = mean(caudal))
+
+```
+
+## Graficación caudales ríos: Banano y Pandora
+
+```{r}
+
+# Gráfico de barras apiladas caudales ríos Banano y Pandora
+ggplot(caudales_x_mes, aes(x = mes, y = caudal, fill = rio)) +
+  ggtitle("Caudales promedio mensuales por río") +
+  geom_col() + 
+  scale_fill_manual(values = c("#86E3CE", "#CCABD8")) +
+  xlab("Meses") +
+  ylab("Caudales") +
+  labs(fill = "Ríos") 
+
+
+```
+
+
+```{r}
+# Cambio de nombre de las columnas mediante rename()
+covid_graf <-
+  covid %>%
+  rename(fecha_nueva = FECHA, positivos_nuevos = nue_posi) %>%
+  mutate(fecha_nueva = as.Date(fecha_nueva, format = "%m/%d/%Y"))
+  
+```
+
+
+```{r}
+# Histograma
+ggplot(covid_graf, aes(y = positivos_nuevos, x = fecha_nueva))+
+  geom_histogram (stat = "identity", color = "purple" )+
+  ggtitle("Distribución de los casos nuevos de covid 19 en Costa Rica")+
+  xlab("Fecha")+
+  ylab("Cantidad de casos nuevos")
+  theme(plot.title = element_text(size = 50, face = "bold"))
+
+```
+
+
+```{r}
+# Histograma con opciones
+
+covid %>%
+  ggplot(aes(x=nue_posi)) +
+  
+    ggtitle("Distribución de casos nuevos de covid-19 en Costa Rica")+
+    geom_histogram (binwidth = 100,
+                    colors ="black",
+                    fill = "purple") +
+  scale_x_continuous(limits = c(0,3300),
+            breaks = c(0,750,1500,2500,3300)) +
+  
+  ylim(0,40)+
+    ylab("Conteo") +
+    xlab("Casos nuevos")
+  
+```
+#Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año
+```{r}
+covid_graf_3 <-
+  covid %>%
+  select(FECHA, hom_fall,muj_fall) %>%
+  rename(fecha_nueva = FECHA,
+         hombres_defunciones = hom_fall,
+         mujeres_defunciones = muj_fall) %>%
+  
+  mutate(fecha_nueva = as.Date(fecha_nueva, format = "%m/%d/%Y")) %>%
+  group_by(mes = format(fecha_nueva, "%m")) %>%
+  
+  summarise(s_hombre = sum(hombres_defunciones),
+            s_mujer = sum(mujeres_defunciones))
+
+```
+
+
+```{r}
+
+ggplot() +
+  
+  geom_col(
+    data = covid_graf_3, 
+    aes(x = mes, y = s_hombre, fill="Hombres"),
+    width = 0.45,
+    position = position_nudge(x = -0.225)) +
+  
+    geom_col(
+    data = covid_graf_3, aes(x = mes, y = s_mujer, fill="Mujeres"),
+    width = 0.45,
+    position = position_nudge( x = 0.225))+
+  
+    scale_fill_manual(values = c("Slate blue", "Spring green"))+
+    ggtitle("Cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año")+
+  xlab("Mes del año")+
+  ylab("Suma personas fallecidas")+
+  
+  theme(
+    legend.box      = "horizontal",
+    legend.key      = element_blank(),
+    legend.title    = element_blank(),
+    legend.position = "top",
+    plot.title = element_text(size = 10, face = "bold")
+  )
+  
+
+
+
+```
+
+
+
+
+
+
