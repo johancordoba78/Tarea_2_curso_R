@@ -1,7 +1,6 @@
 ---
-title: "Tarea"
+title: "Tarea número 2 Curso R. Maestría SIG - Teledetección UNA-UCR"
 author: "Johan Córdoba Peraza"
-date: "5/10/2021"
 output: html_document
 ---
 
@@ -48,7 +47,7 @@ caudales_x_mes <-
 
 ```
 
-## Graficación caudales ríos: Banano y Pandora
+##  Graficación caudales ríos: Banano y Pandora
 
 ```{r}
 
@@ -65,27 +64,7 @@ ggplot(caudales_x_mes, aes(x = mes, y = caudal, fill = rio)) +
 ```
 
 
-```{r}
-# Cambio de nombre de las columnas mediante rename()
-covid_graf <-
-  covid %>%
-  rename(fecha_nueva = FECHA, positivos_nuevos = nue_posi) %>%
-  mutate(fecha_nueva = as.Date(fecha_nueva, format = "%m/%d/%Y"))
-  
-```
-
-
-```{r}
-# Histograma
-ggplot(covid_graf, aes(y = positivos_nuevos, x = fecha_nueva))+
-  geom_histogram (stat = "identity", color = "purple" )+
-  ggtitle("Distribución de los casos nuevos de covid 19 en Costa Rica")+
-  xlab("Fecha")+
-  ylab("Cantidad de casos nuevos")
-  theme(plot.title = element_text(size = 50, face = "bold"))
-
-```
-
+## Histograma que muestre la distribución de los casos nuevos de covid en Costa Rica 
 
 ```{r}
 # Histograma con opciones
@@ -105,20 +84,27 @@ covid %>%
     xlab("Casos nuevos")
   
 ```
-#Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año
+
+## Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año
+
 ```{r}
 covid_graf_3 <-
   covid %>%
-  select(FECHA, hom_fall,muj_fall) %>%
+  select(FECHA, hom_fall, muj_fall) %>%
   rename(fecha_nueva = FECHA,
-         hombres_defunciones = hom_fall,
-         mujeres_defunciones = muj_fall) %>%
+         homb_def = hom_fall,
+         muje_def = muj_fall) %>%
   
-  mutate(fecha_nueva = as.Date(fecha_nueva, format = "%m/%d/%Y")) %>%
-  group_by(mes = format(fecha_nueva, "%m")) %>%
+  mutate(fecha_nueva = as.Date(fecha_nueva, format = "%d/%m/%Y")) %>%
   
-  summarise(s_hombre = sum(hombres_defunciones),
-            s_mujer = sum(mujeres_defunciones))
+  group_by(fecha_nueva = format(fecha_nueva, "%m")) %>%
+  
+  summarise(s_hombre = sum(homb_def),
+            s_mujer = sum(muje_def))
+
+slice_sample(covid_graf_3, n = 10)
+
+
 
 ```
 
@@ -129,34 +115,46 @@ ggplot() +
   
   geom_col(
     data = covid_graf_3, 
-    aes(x = mes, y = s_hombre, fill="Hombres"),
+    aes(x = fecha_nueva, y = s_hombre, fill="Hombres"),
     width = 0.45,
     position = position_nudge(x = -0.225)) +
   
     geom_col(
-    data = covid_graf_3, aes(x = mes, y = s_mujer, fill="Mujeres"),
+    data = covid_graf_3, aes(x = fecha_nueva, y = s_mujer, fill="Mujeres"),
     width = 0.45,
     position = position_nudge( x = 0.225))+
   
-    scale_fill_manual(values = c("Slate blue", "Spring green"))+
+    scale_fill_manual(values = c("Slate blue", "Spring green"),
+                      labels=c('Hombres', 'Mujeres'))+
+  
     ggtitle("Cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año")+
-  xlab("Mes del año")+
-  ylab("Suma personas fallecidas")+
+    xlab("Mes del año")+
+    ylab("Suma personas fallecidas")+
   
   theme(
     legend.box      = "horizontal",
     legend.key      = element_blank(),
     legend.title    = element_blank(),
     legend.position = "top",
-    plot.title = element_text(size = 10, face = "bold")
-  )
+    plot.title = element_text(size = 14, face = "bold"))
   
+
+
+
+
+
+
+
+
 
 
 
 ```
 
 
+
+
+```
 
 
 
