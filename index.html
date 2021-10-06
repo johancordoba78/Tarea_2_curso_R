@@ -173,6 +173,7 @@ pre code {
 <div id="carga-de-paquetes" class="section level2">
 <h2>Carga de paquetes</h2>
 <pre class="r"><code># Carga de paquetes
+
 library(dplyr)
 library(ggplot2)
 library(tidyverse)</code></pre>
@@ -180,6 +181,7 @@ library(tidyverse)</code></pre>
 <div id="carga-de-datos-y-fuentes-de-datos" class="section level2">
 <h2>Carga de datos y fuentes de datos</h2>
 <pre class="r"><code># Datos de caudales de ríos
+
 rios &lt;-
   read.csv(file = &#39;https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/hidrologia/fdc/fdc.csv&#39;)
 
@@ -192,7 +194,9 @@ covid &lt;-
 </div>
 <div id="preparación-de-la-información-primer-gráfico" class="section level2">
 <h2>Preparación de la información primer gráfico</h2>
-<pre class="r"><code>caudales_x_mes &lt;-
+<pre class="r"><code># Preparación de la información
+
+caudales_x_mes &lt;-
   rios %&gt;%
   rename(fecha = Tiempo,
          Río_Banano = Banano.mm..90km2.,
@@ -206,6 +210,7 @@ covid &lt;-
 <div id="graficación-caudales-ríos-banano-y-pandora" class="section level2">
 <h2>Graficación caudales ríos: Banano y Pandora</h2>
 <pre class="r"><code># Gráfico de barras apiladas caudales ríos Banano y Pandora
+
 ggplot(caudales_x_mes, aes(x = mes, y = caudal, fill = rio)) +
   ggtitle(&quot;Caudales promedio mensuales por río&quot;) +
   geom_col() + 
@@ -238,7 +243,9 @@ covid %&gt;%
 </div>
 <div id="gráfico-de-barras-agrupadas-que-muestre-la-cantidad-de-hombres-y-mujeres-fallecidos-por-covid-en-costa-rica-por-cada-uno-de-los-12-meses-del-año" class="section level2">
 <h2>Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año</h2>
-<pre class="r"><code>covid_graf_3 &lt;-
+<pre class="r"><code># Gráfico de barras barras agrupadas organización de los datos
+
+covid_graf_3 &lt;-
   covid %&gt;%
   select(FECHA, hom_fall, muj_fall) %&gt;%
   rename(fecha_nueva = FECHA,
@@ -256,17 +263,19 @@ slice_sample(covid_graf_3, n = 10)</code></pre>
 <pre><code>## # A tibble: 10 x 3
 ##    fecha_nueva s_hombre s_mujer
 ##    &lt;chr&gt;          &lt;int&gt;   &lt;int&gt;
-##  1 02             47764   28663
-##  2 07             94056   58447
-##  3 06             81968   50512
-##  4 11             29062   17780
-##  5 03             56004   33380
-##  6 09             60911   38315
+##  1 04             57765   34671
+##  2 08            106142   66182
+##  3 11             29062   17780
+##  4 03             56004   33380
+##  5 02             47764   28663
+##  6 05             69826   42664
 ##  7 12             37934   22933
-##  8 04             57765   34671
-##  9 05             69826   42664
-## 10 08            106142   66182</code></pre>
-<pre class="r"><code>ggplot() +
+##  8 07             94056   58447
+##  9 10             22337   13629
+## 10 01             46826   28265</code></pre>
+<pre class="r"><code># Gráfico de barras barras agrupadas graficación
+
+ggplot() +
   
   geom_col(
     data = covid_graf_3, 

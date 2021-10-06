@@ -11,7 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Carga de paquetes
 
 ```{r message= FALSE}
+
 # Carga de paquetes
+
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
@@ -19,7 +21,9 @@ library(tidyverse)
 ## Carga de datos y fuentes de datos
 
 ```{r}
+
 # Datos de caudales de ríos
+
 rios <-
   read.csv(file = 'https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/hidrologia/fdc/fdc.csv')
 
@@ -35,6 +39,9 @@ covid <-
 ## Preparación de la información primer gráfico
 
 ```{r}
+
+# Preparación de la información
+
 caudales_x_mes <-
   rios %>%
   rename(fecha = Tiempo,
@@ -52,6 +59,7 @@ caudales_x_mes <-
 ```{r}
 
 # Gráfico de barras apiladas caudales ríos Banano y Pandora
+
 ggplot(caudales_x_mes, aes(x = mes, y = caudal, fill = rio)) +
   ggtitle("Caudales promedio mensuales por río") +
   geom_col() + 
@@ -67,6 +75,7 @@ ggplot(caudales_x_mes, aes(x = mes, y = caudal, fill = rio)) +
 ## Histograma que muestre la distribución de los casos nuevos de covid en Costa Rica 
 
 ```{r}
+
 # Histograma con opciones
 
 covid %>%
@@ -87,7 +96,11 @@ covid %>%
 
 ## Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año
 
+
 ```{r}
+
+# Gráfico de barras barras agrupadas organización de los datos
+
 covid_graf_3 <-
   covid %>%
   select(FECHA, hom_fall, muj_fall) %>%
@@ -110,6 +123,8 @@ slice_sample(covid_graf_3, n = 10)
 
 
 ```{r}
+
+# Gráfico de barras barras agrupadas graficación
 
 ggplot() +
   
